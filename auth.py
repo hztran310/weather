@@ -3,11 +3,11 @@ from datetime import datetime, timedelta
 from typing import Optional
 from jose import JWTError, jwt
 from fastapi import Depends, HTTPException, status
-from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
-from model.user import User
+from model.user import User, TokenData, UserInDB  # Import User and TokenData from models
 from database import get_db
 from util import hash_password, verify_password  # Import from utils.py
+from fastapi.security import OAuth2PasswordBearer
 
 # Secret key to encode and decode JWT tokens (keep it secret)
 SECRET_KEY = "weather123"
@@ -35,12 +35,51 @@ def verify_token(token: str):
     except JWTError:
         return None
 
-# Dependency to get the current user
-def get_current_user(db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
-    payload = verify_token(token)
-    if payload is None:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials")
-    user = db.query(User).filter(User.id == payload.get("sub")).first()
-    if user is None:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="User not found")
+def authenticate_user(db: Session, username: str, password: str):
+    user = db.query(UserInDB).filter(UserInDB.username == username).first()  # Query UserInDB directly
+
+    if not user:
+        return None
+
+    # Check if the user is of type UserInDB and then access hashed_password
+    if isinstance(user, UserInDB):
+        if not verify_password(password, user.hashed_password):
+            return None
+    else:
+        # If user is not of type UserInDB, you might want to handle it differently
+        return None
+
     return user
+def get_user(db: Session, username: str):
+    return db.query(User).filter(User.username == username).first()
+
+async def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
+    credential_exception = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Could not validate credentials",
+        headers={"WWW-Authenticate": "Bearer"},
+    )
+    try: 
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        username: str = payload.get("sub")
+        if username is None:
+            raise credential_exception
+        token_data = TokenData(username=username)
+    except JWTError:
+        raise credential_exception
+    
+    user = get_user(db, username=token_data.username)
+    if user is None:
+        raise credential_exception
+    
+    return user
+
+
+async def get_current_active_user(current_user: User = Depends(get_current_user)):
+    if current_user is None:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Inactive user",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    return current_user

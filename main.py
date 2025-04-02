@@ -1,11 +1,11 @@
-#main.py
 from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy.orm import Session
 import requests
 from database import get_db
-from sqlalchemy.exc import SQLAlchemyError
-from model import WeatherData, WeatherRequest  # Import weather models here
-from auth import create_access_token, hash_password, get_current_user, verify_password
+from model import WeatherData, WeatherRequest, User, UserResponse, UserInDB  # Import UserResponse here
+from auth import create_access_token, hash_password, get_current_user, authenticate_user, get_current_active_user
+from fastapi.security import OAuth2PasswordRequestForm
+from datetime import timedelta
 
 # FastAPI app
 app = FastAPI()
@@ -32,53 +32,37 @@ def get_weather(city: str):
     }
     return weather_info
 
-# Store weather data in the PostgreSQL database
-@app.post("/weather/store")
-def store_weather(weather: WeatherRequest, db: Session = Depends(get_db)):
-    from model import User  # Import User here to avoid circular import issues
-    city = weather.city
-    weather_data = get_weather(city)
-
-    if not weather_data:
-        raise HTTPException(status_code=404, detail="Could not fetch weather data for the specified city")
-    
-    # Store in the database
-    try:
-        weather_entry = WeatherData(
-            city=city,
-            temperature=weather_data["temperature"],
-            humidity=weather_data["humidity"],
-            wind_speed=weather_data["wind_speed"],
-        )
-    except SQLAlchemyError as e:
-        db.rollback()  # Rollback any changes if an error occurs
-        raise HTTPException(status_code=500, detail="Database error: " + str(e))
-
-    db.add(weather_entry)
-    db.commit()
-    db.refresh(weather_entry)
-
-    return {"message": "Weather data stored successfully", "data": weather_data}
-
 # Register a new user (for testing purposes)
 @app.post("/register")
 def register(username: str, password: str, db: Session = Depends(get_db)):
-    from model import User  # Import User here
     hashed_password = hash_password(password)
-    db_user = User(username=username, hashed_password=hashed_password)
+    db_user = UserInDB(username=username, hashed_password=hashed_password)  # Use UserInDB
     db.add(db_user)
     db.commit()
     db.refresh(db_user)
     return {"msg": "User created successfully"}
 
 # Login and generate JWT token
+
 @app.post("/token")
-def login(username: str, password: str, db: Session = Depends(get_db)):
-    from model import User  # Import User here
-    user = db.query(User).filter(User.username == username).first()
-    if not user or not user.verify_password(password):
-        raise HTTPException(status_code=401, detail="Invalid credentials")
+def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
+    username = form_data.username
+    password = form_data.password
+    user = authenticate_user(db, username, password)
+    if not user:
+        raise HTTPException(status_code=401, detail="Incorrect username or password", headers={"WWW-Authenticate": "Bearer"})
     
-    # Create JWT token
-    access_token = create_access_token(data={"sub": user.id})
+    access_token_expires = timedelta(minutes=30)
+    access_token = create_access_token(data={"sub": user.username}, expires_delta=access_token_expires)
+    
     return {"access_token": access_token, "token_type": "bearer"}
+
+
+
+# Get current user
+@app.get("/weather/me", response_model=UserResponse)
+async def read_current_user(current_user: User = Depends(get_current_active_user)):
+    """
+    Get the current logged-in user.
+    """
+    return current_user
