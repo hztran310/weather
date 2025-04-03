@@ -80,10 +80,12 @@ def store_weather(
     db.commit()
     return {"message": "Weather data saved successfully"}
 
-# Get current user
-@app.get("/weather/me", response_model=UserResponse)
-async def read_current_user(current_user: User = Depends(get_current_active_user)):
-    """
-    Get the current logged-in user.
-    """
-    return current_user
+@app.get("/weather/my_data")
+def get_user_weather_data(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+    # Fetch weather data associated with the current user
+    weather_data = db.query(WeatherData).filter(WeatherData.user_id == current_user.id).all()
+    
+    if not weather_data:
+        raise HTTPException(status_code=404, detail="No weather data found for this user")
+    
+    return weather_data
