@@ -43,7 +43,6 @@ def register(username: str, password: str, db: Session = Depends(get_db)):
     return {"msg": "User created successfully"}
 
 # Login and generate JWT token
-
 @app.post("/token")
 def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
     username = form_data.username
@@ -57,7 +56,29 @@ def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depend
     
     return {"access_token": access_token, "token_type": "bearer"}
 
+@app.post("/weather/store")
+def store_weather(
+    city: str,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),  # Ensure user is authenticated
+):
+    weather = get_weather(city)  # Get weather from API
+    
+    if not weather:
+        raise HTTPException(status_code=404, detail="Weather data not found")
 
+    # Save to database with user_id
+    new_weather = WeatherData(
+        city=weather["city"],
+        temperature=weather["temperature"],
+        humidity=weather["humidity"],
+        wind_speed=weather["wind_speed"],
+        user_id=current_user.id  # ✅ Fix: Store the user who added the data
+    )
+    
+    db.add(new_weather)
+    db.commit()
+    return {"message": "Weather data saved successfully"}
 
 # Get current user
 @app.get("/weather/me", response_model=UserResponse)
