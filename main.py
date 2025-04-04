@@ -6,9 +6,19 @@ from model import WeatherData, WeatherRequest, User, UserResponse, UserInDB  # I
 from auth import create_access_token, hash_password, get_current_user, authenticate_user, get_current_active_user
 from fastapi.security import OAuth2PasswordRequestForm
 from datetime import timedelta
+from fastapi.middleware.cors import CORSMiddleware
 
 # FastAPI app
 app = FastAPI()
+
+# Add CORS middleware to allow frontend requests
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Allow all origins (or set your frontend URL)
+    allow_credentials=True,
+    allow_methods=["*"],  # Allow all methods (GET, POST, etc.)
+    allow_headers=["*"],  # Allow all headers
+)
 
 # OpenWeather API Key
 API_KEY = "b02beb5f6754f998a9d86759f9d5c3cf"
