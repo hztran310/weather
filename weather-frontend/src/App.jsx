@@ -1,44 +1,46 @@
-import { useState } from "react";
-import { fetchWeatherData } from "./api";
+import React, { useState, useEffect } from "react";
+import WeatherList from "./WeatherList";
+import WeatherChart from "./WeatherChart";
+
 
 function App() {
-    const [city, setCity] = useState("");
-    const [weather, setWeather] = useState(null);
-    const [token, setToken] = useState(""); // Store the token here
+    const [token, setToken] = useState(""); // Store JWT token
+    const [weatherData, setWeatherData] = useState([]); // Store weather data
 
-    const handleFetchWeather = async () => {
-        if (!token) {
-            alert("Please enter your token!");
-            return;
+
+    useEffect(() => {
+        if (token) {
+            // Fetch weather data from the backend
+            fetch("http://127.0.0.1:8000/weather/my_data", {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            })
+                .then((response) => {
+                    if (!response.ok) {
+                        throw new Error("Failed to fetch weather data");
+                    }
+                    return response.json();
+                })
+                .then((data) => setWeatherData(data))
+                .catch((error) => console.error(error));
         }
-        const data = await fetchWeatherData(city, token);
-        setWeather(data);
-    };
+    }, [token]);
 
     return (
-        <div style={{ textAlign: "center", padding: "20px" }}>
-            <h1>Weather App</h1>
+        <div>
+            <h1>Weather Dashboard</h1>
             <input
                 type="text"
-                placeholder="Enter city"
-                value={city}
-                onChange={(e) => setCity(e.target.value)}
-            />
-            <input
-                type="text"
-                placeholder="Enter token"
+                placeholder="Enter your token"
                 value={token}
                 onChange={(e) => setToken(e.target.value)}
             />
-            <button onClick={handleFetchWeather}>Get Weather</button>
-
-            {weather && (
-                <div style={{ marginTop: "20px" }}>
-                    <h2>{weather.city}</h2>
-                    <p>Temperature: {weather.temperature}°C</p>
-                    <p>Humidity: {weather.humidity}%</p>
-                    <p>Wind Speed: {weather.wind_speed} m/s</p>
-                </div>
+            {token && (
+                <>
+                    <WeatherList token={token} />
+                    <WeatherChart weatherData={weatherData} />
+                </>
             )}
         </div>
     );

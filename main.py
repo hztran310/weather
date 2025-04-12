@@ -8,8 +8,10 @@ from fastapi.security import OAuth2PasswordRequestForm
 from datetime import timedelta
 from fastapi.middleware.cors import CORSMiddleware
 
+
 # FastAPI app
 app = FastAPI()
+
 
 # Add CORS middleware to allow frontend requests
 app.add_middleware(
