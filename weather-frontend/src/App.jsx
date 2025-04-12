@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import WeatherList from "./WeatherList";
 import WeatherChart from "./WeatherChart";
+import LoginForm from "./LoginForm";
 
 
 function App() {
@@ -8,42 +9,24 @@ function App() {
     const [weatherData, setWeatherData] = useState([]); // Store weather data
 
 
-    useEffect(() => {
-        if (token) {
-            // Fetch weather data from the backend
-            fetch("http://127.0.0.1:8000/weather/my_data", {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            })
-                .then((response) => {
-                    if (!response.ok) {
-                        throw new Error("Failed to fetch weather data");
-                    }
-                    return response.json();
-                })
-                .then((data) => setWeatherData(data))
-                .catch((error) => console.error(error));
-        }
-    }, [token]);
-
     return (
         <div>
-            <h1>Weather Dashboard</h1>
-            <input
-                type="text"
-                placeholder="Enter your token"
-                value={token}
-                onChange={(e) => setToken(e.target.value)}
-            />
-            {token && (
-                <>
-                    <WeatherList token={token} />
+            <h1>Weather App</h1>
+            {!token ? (
+                <LoginForm setToken={setToken} />
+            ) : (
+                <div>
+                    <WeatherList 
+                        token={token} 
+                        weatherData={weatherData}
+                        setWeatherData={setWeatherData} />
                     <WeatherChart weatherData={weatherData} />
-                </>
+                </div>
             )}
         </div>
     );
-}
+
+
+};
 
 export default App;
