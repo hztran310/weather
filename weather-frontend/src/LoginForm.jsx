@@ -18,39 +18,126 @@ const LoginForm = ({ setToken }) => {
                     'Content-Type': 'application/x-www-form-urlencoded',
                 },
                 body: formData,
-        });
+            });
 
-        if (!response.ok) throw new Error('Login failed');
+            if (!response.ok) throw new Error('Login failed');
 
-        const data = await response.json();
-        setToken(data.access_token); // Save the token in the parent component, in App state
+            const data = await response.json();
+            setToken(data.access_token);
         }
-        catch (error)
-        {
+        catch (error) {
             alert('Login error: ' + error.message);
         }
     };
 
     return (
-        <form onSubmit={handleLogin}>
-            <h2> Login </h2>
-            <input
-                type="text"
-                placeholder="Username"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                required
-            />
-            <input
-                type="password"
-                placeholder="Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-            />
-            <button type="submit">Login</button>
-        </form>
+        <div style={styles.outerContainer}>
+            <div style={styles.innerContainer}>
+                {/* Left side - image */}
+                <div style={styles.leftSide}></div>
+                
+                {/* Right side - form */}
+                <div style={styles.rightSide}>
+                    <form onSubmit={handleLogin} style={styles.form}>
+                        <h2 style={styles.heading}>Welcome</h2>
+                        <input
+                            style={styles.input}
+                            type="text"
+                            placeholder="Username"
+                            value={username}
+                            onChange={(e) => setUsername(e.target.value)}
+                            required
+                        />
+                        <input
+                            style={styles.input}
+                            type="password"
+                            placeholder="Password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            required
+                        />
+                        <button type="submit" style={styles.button}>Login</button>
+                    </form>
+                </div>
+            </div>
+        </div>
     );
+};
+
+const styles = {
+    outerContainer: {
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: '100vh',
+        width: '100vw',
+        backgroundColor: '#8E7DBE', // Background color for the outer area
+    },
+    innerContainer: {
+        display: 'flex',
+        height: '80%', // You can adjust this
+        width: '75%', // 75% of screen width
+        borderRadius: '15px', // Rounded corners for the container
+        overflow: 'hidden', // Ensures the image stays within rounded borders
+        boxShadow: '0 10px 25px rgba(0, 0, 0, 0.1)', // Nice shadow effect
+    },
+    leftSide: {
+        flex: 1,
+        backgroundColor: '#A6D6D6',
+        backgroundImage: 'url(/image/undraw_weather-app_4cp0.svg)',
+        backgroundSize: 'contain',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+    },
+    rightSide: {
+        flex: 1,
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#FFE6C9',
+    },
+    form: {
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '15px',
+        width: '70%',
+        padding: '40px',
+        borderRadius: '8px',
+        boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+        alignItems: 'center',
+        backgroundColor: '#5F99AE',
+    },
+    heading: {
+        textAlign: 'center',
+        margin: '0 0 20px 0',
+        color: '#F7CFD8',
+        fontSize: '2rem', // Larger heading
+    },
+    input: {
+        padding: '12px 20px',
+        borderRadius: '20px',
+        border: '1px solid #ddd',
+        fontSize: '16px',
+        width: '100%',
+        backgroundColor: '#F4F8D3',
+        color: '#333',
+    },
+    button: {
+        padding: '12px',
+        borderRadius: '20px',
+        border: 'none',
+        backgroundColor: '#A6D6D6',
+        color: 'white',
+        fontSize: '16px',
+        cursor: 'pointer',
+        width: '50%',
+        transition: 'all 0.3s',
+        fontWeight: 'bold',
+        ':hover': {
+            backgroundColor: '#8cc2c2',
+            transform: 'translateY(-2px)',
+        }
+    },
 };
 
 export default LoginForm;

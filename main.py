@@ -7,6 +7,10 @@ from auth import create_access_token, hash_password, get_current_user, authentic
 from fastapi.security import OAuth2PasswordRequestForm
 from datetime import timedelta
 from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
+
+class CityRequest(BaseModel):
+    city: str
 
 
 # FastAPI app
@@ -70,10 +74,11 @@ def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depend
 
 @app.post("/weather/store")
 def store_weather(
-    city: str,
+    request: CityRequest,
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),  # Ensure user is authenticated
 ):
+    city = request.city
     weather = get_weather(city)  # Get weather from API
     
     if not weather:
