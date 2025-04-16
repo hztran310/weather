@@ -3,6 +3,7 @@ import WeatherList from "./WeatherList";
 import WeatherChart from "./WeatherChart";
 import LoginForm from "./LoginForm";
 import WeatherForm from "./WeatherForm";
+import WeatherSearch from "./WeatherSearch";
 
 function App() {
     const [token, setToken] = useState("");
@@ -31,9 +32,10 @@ function App() {
                 <LoginForm setToken={setToken} />
             ) : (
                 <div>
-                    <WeatherForm token={token} onSuccess={fetchData} />
+                    <WeatherSearch token={token} onStoreSuccess={fetchData} />
+                    {/* <WeatherForm token={token} onSuccess={fetchData} />
                     <WeatherList token={token} weatherData={weatherData} setWeatherData={setWeatherData}/>
-                    <WeatherChart weatherData={weatherData} />
+                    <WeatherChart weatherData={weatherData} /> */}
                 </div>
             )}
         </div>
