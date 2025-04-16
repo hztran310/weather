@@ -70,15 +70,6 @@ const WeatherSearch = ({ token, onStoreSuccess }) => {
         return `${hours}:${minutes} ${ampm}`;
     };
 
-    // Mock hourly data - in a real app, this would come from your API
-    const hourlyForecast = [
-        { time: "01:00", temp: 29 },
-        { time: "02:00", temp: 26 },
-        { time: "03:00", temp: 34 },
-        { time: "04:00", temp: 36 },
-        { time: "05:00", temp: 24 },
-    ];
-
     return (
         <div className={`weather-container ${weather ? "active" : ""}`}>
             <div className="search-box">
@@ -96,43 +87,45 @@ const WeatherSearch = ({ token, onStoreSuccess }) => {
                 {weather && (
                     <>
                         <div className="weather-header">
-                            <div className="weather-date">{formatDate()}</div>
+                            <div className="weather-date">{formatDate(weather.timestamp)}</div>
                         </div>
 
                         <div className="weather-main">
-                        <div className="weather-snippet">
-                            <div className="weather-top">
-                                <div className="weather-location-time">London 10:35 AM</div>
-                                <div className="weather-temp">13.61°</div>
-                            </div>
+                            <div className="weather-snippet">
+                                <div className="weather-top">
+                                    <div className="weather-location-time">
+                                        {weather.city} {formatTime(weather.timestamp)}
+                                    </div>
+                                    <div className="weather-temp">{weather.temperature}°</div>
+                                </div>
 
-                            <div className="weather-bottom">
-                                <div className="weather-description">
-                                    fxdcgvhbjknmlsadfgnjugjhn  qweegrhtyju
-                                </div>
-                                <div className="weather-highlow">
-                                    H:16.61°  L:8.61°
+                                <div className="weather-bottom">
+                                    <div className="weather-description">
+                                        {weather.description || "Weather information"}
+                                    </div>
+                                    <div className="weather-highlow">
+                                        H:{weather.temp_max || weather.temperature + 2}° L:{weather.temp_min || weather.temperature - 2}°
+                                    </div>
                                 </div>
                             </div>
-                        </div>
                         </div>
 
                         <div className="weather-details">
                             <div className="weather-detail-item">
                                 <span className="detail-label">Forecast</span>
-                                <span className="detail-value">Partly cloudy</span>
+                                <span className="detail-value">{weather.forecast || "Partly cloudy"}</span>
                             </div>
                             <div className="weather-detail-item">
                                 <span className="detail-label">Precipitation</span>
-                                <span className="detail-value">21%</span>
+                                <span className="detail-value">{weather.precipitation || "0"}%</span>
                             </div>
                             <div className="weather-detail-item">
                                 <span className="detail-label">Feels like</span>
-                                <span className="detail-value">{weather.temperature + 13}°</span>
+                                <span className="detail-value">{weather.feels_like || weather.temperature}°</span>
                             </div>
                             <div className="weather-detail-item">
                                 <span className="detail-label">Wind</span>
-                                <span className="detail-value">{weather.wind_speed} km/h WSW</span>
+                                <span className="detail-value">{weather.wind_speed} km/h {weather.wind_direction || "SW"}</span>
                             </div>
                             <div className="weather-detail-item">
                                 <span className="detail-label">Humidity</span>
@@ -140,17 +133,8 @@ const WeatherSearch = ({ token, onStoreSuccess }) => {
                             </div>
                             <div className="weather-detail-item">
                                 <span className="detail-label">Sunset</span>
-                                <span className="detail-value">6:45 PM</span>
+                                <span className="detail-value">{weather.sunset || "6:45 PM"}</span>
                             </div>
-                        </div>
-
-                        <div className="weather-hourly">
-                            {hourlyForecast.map((hour, index) => (
-                                <div key={index} className="hourly-item">
-                                    <span className="hourly-time">{hour.time}</span>
-                                    <span className="hourly-temp">{hour.temp}°</span>
-                                </div>
-                            ))}
                         </div>
 
                         <button 
