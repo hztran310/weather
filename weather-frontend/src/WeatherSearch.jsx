@@ -70,6 +70,18 @@ const WeatherSearch = ({ token, onStoreSuccess }) => {
         return `${hours}:${minutes} ${ampm}`;
     };
 
+    const formatSunsetTime = (timestamp, timezoneOffset) => {
+        if (!timestamp || typeof timezoneOffset !== 'number') return "N/A";
+    
+        const localTime = new Date((timestamp + timezoneOffset) * 1000); // Convert to ms
+        const options = {
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: true,
+        };
+        return localTime.toLocaleTimeString([], options);
+    };
+    
     return (
         <div className={`weather-container ${weather ? "active" : ""}`}>
             <div className="search-box">
@@ -94,14 +106,17 @@ const WeatherSearch = ({ token, onStoreSuccess }) => {
                             <div className="weather-snippet">
                                 <div className="weather-top">
                                     <div className="weather-location-time">
-                                        {weather.city} {formatTime(weather.timestamp)}
+                                        {weather.city
+                                            .split(" ")
+                                            .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+                                        .join(" ")} {formatTime(weather.timestamp)}
                                     </div>
                                     <div className="weather-temp">{weather.temperature}°</div>
                                 </div>
 
                                 <div className="weather-bottom">
                                     <div className="weather-description">
-                                        {weather.description || "Weather information"}
+                                        {getWeatherQuote(weather.description)}
                                     </div>
                                     <div className="weather-highlow">
                                         H:{weather.temp_max || weather.temperature + 2}° L:{weather.temp_min || weather.temperature - 2}°
@@ -113,7 +128,10 @@ const WeatherSearch = ({ token, onStoreSuccess }) => {
                         <div className="weather-details">
                             <div className="weather-detail-item">
                                 <span className="detail-label">Forecast</span>
-                                <span className="detail-value">{weather.forecast || "Partly cloudy"}</span>
+                                <span className="detail-value">{weather.description
+                                            .split(" ")
+                                            .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+                                        .join(" ")}</span>
                             </div>
                             <div className="weather-detail-item">
                                 <span className="detail-label">Precipitation</span>
@@ -133,7 +151,7 @@ const WeatherSearch = ({ token, onStoreSuccess }) => {
                             </div>
                             <div className="weather-detail-item">
                                 <span className="detail-label">Sunset</span>
-                                <span className="detail-value">{weather.sunset || "6:45 PM"}</span>
+                                <span className="detail-value">{formatSunsetTime(weather.sunset, weather.timezoneOffset)|| "6:45 PM"}</span>
                             </div>
                         </div>
 
@@ -157,6 +175,25 @@ const WeatherSearch = ({ token, onStoreSuccess }) => {
             </div>
         </div>
     );    
+};
+
+const getWeatherQuote = (description) => {
+    const quotes = {
+        "clear sky": "The sun is shining, and so are you.",
+        "few clouds": "Clouds come and go, just like worries.",
+        "scattered clouds": "Every cloud has a silver lining.",
+        "broken clouds": "Through the clouds, the sun still shines.",
+        "shower rain": "A little rain never hurt anyone.",
+        "rain": "Let the rain wash away all your worries.",
+        "thunderstorm": "Even the storm has its purpose.",
+        "snow": "Let it snow, let it snow, let it snow!",
+        "mist": "Mist makes everything look like a dream.",
+        "fog": "The fog will lift, and you'll see the way.",
+        "drizzle": "A little drizzle can make the day feel fresh.",
+    };
+
+    // Fallback to a default quote if description is not in the map
+    return quotes[description.toLowerCase()] || "Embrace the weather, it’s your moment.";
 };
 
 export default WeatherSearch;

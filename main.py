@@ -43,9 +43,19 @@ def get_weather(city: str):
     weather_info = {
         "city": city,
         "temperature": data["main"]["temp"],
+        "temp_max": data["main"]["temp_max"],  # High temperature
+        "temp_min": data["main"]["temp_min"],  # Low temperature
+        "description": data["weather"][0]["description"],  # Weather forecast description
+        "feels_like": data["main"]["feels_like"],  # Feels like temperature
         "humidity": data["main"]["humidity"],
         "wind_speed": data["wind"]["speed"],
+        "wind_direction": data["wind"].get("deg", "N/A"),  # Wind direction (if available)
+        "precipitation": data.get("rain", {}).get("1h", 0),  # Precipitation (1h)
+        "sunset": data["sys"]["sunset"],  # Sunset time (in UTC)
+        "timezone_offset": data.get("timezone", 0),  # Offset from UTC in seconds
+
     }
+     
     return weather_info
 
 # Register a new user (for testing purposes)
