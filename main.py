@@ -52,7 +52,10 @@ def get_weather(city: str):
         "wind_direction": data["wind"].get("deg", "N/A"),  # Wind direction (if available)
         "precipitation": data.get("rain", {}).get("1h", 0),  # Precipitation (1h)
         "sunset": data["sys"]["sunset"],  # Sunset time (in UTC)
-        "timezone_offset": data.get("timezone", 0),  # Offset from UTC in seconds
+        "timezone_offset": data.get("timezone", 0),  # Ensure this field is added to the response
+        "lat": data["coord"]["lat"],  # Latitude
+        "lon": data["coord"]["lon"],  # Longitude
+
 
     }
      

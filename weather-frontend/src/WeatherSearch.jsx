@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import "./WeatherSearch.css";
+import tzLookup from 'tz-lookup';
+
 
 const WeatherSearch = ({ token, onStoreSuccess }) => {
     const [city, setCity] = useState("");
@@ -70,17 +72,18 @@ const WeatherSearch = ({ token, onStoreSuccess }) => {
         return `${hours}:${minutes} ${ampm}`;
     };
 
-    const formatSunsetTime = (timestamp, timezoneOffset) => {
-        if (!timestamp || typeof timezoneOffset !== 'number') return "N/A";
-    
-        const localTime = new Date((timestamp + timezoneOffset) * 1000); // Convert to ms
+    const formatSunsetTime = (timestamp, lat, lon) => {
+        const timezone = tzLookup(lat, lon);
+        const date = new Date(timestamp * 1000);
         const options = {
             hour: '2-digit',
             minute: '2-digit',
             hour12: true,
+            timeZone: timezone,
         };
-        return localTime.toLocaleTimeString([], options);
+        return date.toLocaleTimeString('en-US', options);
     };
+    
     
     return (
         <div className={`weather-container ${weather ? "active" : ""}`}>
@@ -151,7 +154,12 @@ const WeatherSearch = ({ token, onStoreSuccess }) => {
                             </div>
                             <div className="weather-detail-item">
                                 <span className="detail-label">Sunset</span>
-                                <span className="detail-value">{formatSunsetTime(weather.sunset, weather.timezoneOffset)|| "6:45 PM"}</span>
+                                {/* <span className="detail-value">{formatSunsetTime(weather.sunset, weather.timezone_offset)|| "6:45 PM"}</span> */}
+                                <span className="detail-value">
+                                    {weather.sunset && weather.lat && weather.lon
+                                        ? formatSunsetTime(weather.sunset, weather.lat, weather.lon)
+                                        : "N/A"}
+                                </span>
                             </div>
                         </div>
 
