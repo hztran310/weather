@@ -3,10 +3,33 @@ import "./WeatherSearch.css";
 import tzLookup from 'tz-lookup';
 
 
+
 const WeatherSearch = ({ token, onStoreSuccess }) => {
     const [city, setCity] = useState("");
     const [weather, setWeather] = useState(null);
     const [error, setError] = useState(null);
+    const [suggestions, setSuggestions] = useState([]);
+
+    const API_KEY = "b02beb5f6754f998a9d86759f9d5c3cf";
+
+    const fetchSugesstion = async (query) => {
+        if (!query) return setSuggestions([]);
+        const response = await fetch(`https://api.openweathermap.org/geo/1.0/direct?q=${query}&limit=5&appid=${API_KEY}`);
+        const data = await response.json();
+        setSuggestions(data);
+    };
+
+    const handleInputChange = (e) => {
+        const value = e.target.value;
+        setCity(value);
+        fetchSugesstion(value);
+    }
+
+    const handleSuggestionClick = (suggestions) => {
+        const formatted = `${suggestions.name}, ${suggestions.country}`;
+        setCity(formatted);
+        setSuggestions([]);
+    }
 
     const checkWeather = async () => {
         setError("");
@@ -90,10 +113,19 @@ const WeatherSearch = ({ token, onStoreSuccess }) => {
             <div className="search-box">
                 <input
                     value={city}
-                    onChange={(e) => setCity(e.target.value)}
+                    onChange={handleInputChange}
                     placeholder="Enter city name"
                 />
                 <button onClick={checkWeather}>Check Weather</button>
+                {suggestions.length > 0 && (
+                    <ul className="suggestions-list">
+                        {suggestions.map((s, idx) => (
+                            <li key={idx} onClick={() => handleSuggestionClick(s)}>
+                                {s.name}, {s.state ? `${s.state}, ` : ""}{s.country}
+                                </li>
+                        ))}
+                    </ul>
+                )}
             </div>
     
             {error && <p className="error-message">{error}</p>}
