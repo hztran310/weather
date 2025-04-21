@@ -25,10 +25,11 @@ const WeatherSearch = ({ token, onStoreSuccess }) => {
         fetchSugesstion(value);
     }
 
-    const handleSuggestionClick = (suggestions) => {
+    const handleSuggestionClick = async (suggestions) => {
         const formatted = `${suggestions.name}, ${suggestions.country}`;
         setCity(formatted);
         setSuggestions([]);
+        await checkWeather();
     }
 
     const checkWeather = async () => {
@@ -114,9 +115,11 @@ const WeatherSearch = ({ token, onStoreSuccess }) => {
                 <input
                     value={city}
                     onChange={handleInputChange}
+                    onKeyDown={(e) => {
+                        if (e.key === "Enter") checkWeather()
+                    }}
                     placeholder="Enter city name"
                 />
-                <button onClick={checkWeather}>Check Weather</button>
                 {suggestions.length > 0 && (
                     <ul className="suggestions-list">
                         {suggestions.map((s, idx) => (
@@ -212,6 +215,18 @@ const WeatherSearch = ({ token, onStoreSuccess }) => {
                         </button>
                     </>
                 )}
+            </div>
+
+            <div className="map-container">
+                <p> Hello </p>
+            </div>
+
+            <div className="chart-container">
+                <p>Chart</p>
+            </div>
+
+            <div className="weather-detail-container">
+                <p>Weather Details</p>
             </div>
         </div>
     );    
