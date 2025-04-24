@@ -259,19 +259,34 @@
 }
 
 .map-container {
-    background-color: #19c7c7;
+    background-color: white;
     width: 35%;
     height: 30%;
     border-radius: 20px;
     box-shadow: 0 5px 15px rgba(0,0,0,0.1);
     margin-top: 20px;
-    position: relative;
+    position: absolute;
     opacity: 1;
     transform: translateY(20px);
     position: absolute;
     top: 3%;
     left: 35%;
+    overflow: hidden;
 }
+
+.map-container {
+    background-color: white;
+    width: 35%;
+    height: 30%;
+    border-radius: 20px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    margin-top: 20px;
+    position: absolute;
+    top: 3%;
+    left: 35%;
+    overflow: hidden;
+}
+
 
 .chart-container {
     background-color: #da54c3;
