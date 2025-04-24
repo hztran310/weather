@@ -1,6 +1,21 @@
 import React, { useState } from "react";
 import "./WeatherSearch.css";
 import tzLookup from 'tz-lookup';
+import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import 'leaflet/dist/leaflet.css';
+import L from 'leaflet';
+import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png';
+import markerIcon from 'leaflet/dist/images/marker-icon.png';
+import markerShadow from 'leaflet/dist/images/marker-shadow.png';
+import MapWithPan from './MapWithPan';
+
+delete L.Icon.Default.prototype._getIconUrl;
+
+L.Icon.Default.mergeOptions({
+    iconRetinaUrl: markerIcon2x,
+    iconUrl: markerIcon,
+    shadowUrl: markerShadow,
+});
 
 
 
@@ -9,6 +24,7 @@ const WeatherSearch = ({ token, onStoreSuccess }) => {
     const [weather, setWeather] = useState(null);
     const [error, setError] = useState(null);
     const [suggestions, setSuggestions] = useState([]);
+    const [mapCenter, setMapCenter] = useState(null);
 
     const API_KEY = "b02beb5f6754f998a9d86759f9d5c3cf";
 
@@ -41,8 +57,10 @@ const WeatherSearch = ({ token, onStoreSuccess }) => {
             if (data.error) {
                 setError("City not found");
                 setWeather(null);
+                setMapCenter(null);
             } else {
                 setWeather(data);
+                setMapCenter([data.lat, data.lon]);
             }
         } catch (err) {
             setError("An error occurred while fetching weather data");
@@ -217,9 +235,25 @@ const WeatherSearch = ({ token, onStoreSuccess }) => {
                 )}
             </div>
 
-            <div className="map-container">
-                <p> Hello </p>
-            </div>
+            {weather && weather.lat && weather.lon && (
+                <div className="map-container">
+                    <MapContainer
+                        center={[weather.lat, weather.lon]}
+                        zoom={10}
+                        style={{ width: "100%", height: "100%", borderRadius: "20px" }}
+                        scrollWheelZoom={false}
+                    >
+                        <MapWithPan
+                            lat={weather.lat}
+                            lon={weather.lon}
+                            city={weather.city}
+                            description={weather.description}
+                        />
+                    </MapContainer>
+                </div>
+            )}
+
+
 
             <div className="chart-container">
                 <p>Chart</p>
