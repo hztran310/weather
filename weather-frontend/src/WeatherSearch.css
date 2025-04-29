@@ -4,7 +4,7 @@
     align-items: left;
     min-height: 100vh;
     width: 100vw;
-    background-color: #8E7DBE;
+    background-color: #3D365C;
     margin: 0;
     padding: 40px;
     box-sizing: border-box;
@@ -54,7 +54,6 @@
 .weather-info {
     width: 100%;
     max-width: 400px;
-    background: white;
     border-radius: 20px;
     padding: 25px;
     box-shadow: 0 5px 15px rgba(0,0,0,0.1);
@@ -62,7 +61,7 @@
     opacity: 0;
     transform: translateY(20px);
     transition: all 0.4s ease-in-out;
-    background-color: #F5ECE0;
+    background-color: #F4F8D3;
     margin-top: 20px;
 }
 
@@ -81,7 +80,7 @@
 
 .weather-date {
     font-size: 14px;
-    color: #666;
+    color: #3D365C;
     text-align: right;
     margin-left: auto;
 }
@@ -92,24 +91,54 @@
 }
 
 .weather-snippet {
-    background-color: #210F37;
+    background-color: #F7CFD8;
     border-radius: 12px;
     padding: 20px;
     margin-top: 10px;
-    color: #F7CFD8;
+    color: #3D365C;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    height: 130px;
+    height: 170px;
     position: relative;
 }
 
 .weather-top {
     display: flex;
     justify-content: space-between;
-    align-items: flex-start;
+    flex-direction: column;
 }
 
+.icon-temp-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+  
+.weather-forecast-icon {
+    width: 120px;
+    height: 120px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.weather-forecast-icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.temp-forecast-group {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    text-align: right;
+}
+  
 .weather-bottom {
     display: flex;
     justify-content: space-between;
@@ -126,6 +155,7 @@
     font-size: 16px;
     text-align: left;
     font-weight: bold;
+
 }
 
 .weather-temp {
@@ -164,8 +194,6 @@
 }
 
 
-
-
 .weather-details {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -178,7 +206,7 @@
     flex-direction: column;
     align-items: center;
     padding: 10px;
-    background: #f9f9f9;
+    background: #A6D6D6;
     border-radius: 10px;
 }
 
@@ -317,4 +345,6 @@
     top: 3%;
     left: 71%;
 }
+
+
 
