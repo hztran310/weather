@@ -46,7 +46,9 @@ const WeatherSearch = ({ token, onStoreSuccess }) => {
         setCity(formatted);
         setSuggestions([]);
         await checkWeather();
+        setCity(""); // Clear the input after search
     }
+    
 
     const checkWeather = async () => {
         setError("");
@@ -134,14 +136,19 @@ const WeatherSearch = ({ token, onStoreSuccess }) => {
                     value={city}
                     onChange={handleInputChange}
                     onKeyDown={(e) => {
-                        if (e.key === "Enter") checkWeather()
+                        if (e.key === "Enter") 
+                            checkWeather()
+                            setSuggestions([]);
                     }}
                     placeholder="Enter city name"
                 />
                 {suggestions.length > 0 && (
                     <ul className="suggestions-list">
                         {suggestions.map((s, idx) => (
-                            <li key={idx} onClick={() => handleSuggestionClick(s)}>
+                            <li key={idx} 
+                            onClick={() => {
+                                handleSuggestionClick(s);
+                            }}>
                                 {s.name}, {s.state ? `${s.state}, ` : ""}{s.country}
                                 </li>
                         ))}
