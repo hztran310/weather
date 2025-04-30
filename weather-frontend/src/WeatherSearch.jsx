@@ -136,11 +136,13 @@ const WeatherSearch = ({ token, onStoreSuccess }) => {
                 <input
                     value={city}
                     onChange={handleInputChange}
-                    onKeyDown={(e) => {
-                        if (e.key === "Enter") 
-                            checkWeather()
+                    onKeyDown={async (e) => {
+                        if (e.key === "Enter") {
+                            await checkWeather();
+                            setCity("");  // Clear input after search
                             setSuggestions([]);
-                    }}
+                        }
+                    }}                    
                     placeholder="Enter city name"
                 />
                 {suggestions.length > 0 && (
