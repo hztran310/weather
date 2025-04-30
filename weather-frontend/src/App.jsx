@@ -33,9 +33,6 @@ function App() {
             ) : (
                 <div>
                     <WeatherSearch token={token} onStoreSuccess={fetchData} />
-                    {/* <WeatherForm token={token} onSuccess={fetchData} />
-                    <WeatherList token={token} weatherData={weatherData} setWeatherData={setWeatherData}/>
-                    <WeatherChart weatherData={weatherData} /> */}
                 </div>
             )}
         </div>

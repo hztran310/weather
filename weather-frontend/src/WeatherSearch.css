@@ -316,20 +316,7 @@
 }
 
 
-.chart-container {
-    background-color: #da54c3;
-    width: 63%;
-    height: 57%;
-    border-radius: 20px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-    margin-top: 20px;
-    position: relative;
-    opacity: 1;
-    transform: translateY(20px);
-    position: absolute;
-    top: 35%;
-    left: 35%;
-}
+
 
 .weather-detail-container {
     background-color: #b5bb4b;
