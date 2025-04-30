@@ -8,6 +8,7 @@ import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png';
 import markerIcon from 'leaflet/dist/images/marker-icon.png';
 import markerShadow from 'leaflet/dist/images/marker-shadow.png';
 import MapWithPan from './MapWithPan';
+import { getWeatherIcon } from "./iconMapper";
 
 delete L.Icon.Default.prototype._getIconUrl;
 
@@ -167,15 +168,29 @@ const WeatherSearch = ({ token, onStoreSuccess }) => {
 
                         <div className="weather-main">
                             <div className="weather-snippet">
-                                <div className="weather-top">
-                                    <div className="weather-location-time">
+                            <div className="weather-top">
+                                <div className="weather-location-time">
                                         {weather.city
                                             .split(" ")
                                             .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
                                         .join(" ")} {formatTime(weather.timestamp)}
+                                </div>                        
+                                <div className="icon-temp-wrapper">
+                                    <div className="weather-forecast-icon">
+                                    <img src={getWeatherIcon(weather.description)} alt="weather icon" />
                                     </div>
+                                    <div className="temp-forecast-group">
                                     <div className="weather-temp">{weather.temperature}°</div>
+                                    <div className="weather-forecast">
+                                        {weather.description
+                                        .split(" ")
+                                        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+                                        .join(" ")}
+                                    </div>
+                                    </div>
                                 </div>
+                            </div>
+
 
                                 <div className="weather-bottom">
                                     <div className="weather-description">
@@ -275,7 +290,7 @@ const WeatherSearch = ({ token, onStoreSuccess }) => {
 
 const getWeatherQuote = (description) => {
     const quotes = {
-        "clear sky": "The sun is shining, and so are you.",
+        "clear sky": "Pure bliss.",
         "few clouds": "Clouds come and go, just like worries.",
         "scattered clouds": "Every cloud has a silver lining.",
         "broken clouds": "Through the clouds, the sun still shines.",
