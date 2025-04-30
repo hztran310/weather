@@ -9,6 +9,7 @@ import markerIcon from 'leaflet/dist/images/marker-icon.png';
 import markerShadow from 'leaflet/dist/images/marker-shadow.png';
 import MapWithPan from './MapWithPan';
 import { getWeatherIcon } from "./iconMapper";
+import CompareWeather from './CompareWeather.jsx';
 
 delete L.Icon.Default.prototype._getIconUrl;
 
@@ -223,7 +224,7 @@ const WeatherSearch = ({ token, onStoreSuccess }) => {
                             </div>
                             <div className="weather-detail-item">
                                 <span className="detail-label">Wind</span>
-                                <span className="detail-value">{weather.wind_speed} km/h {weather.wind_direction || "SW"}</span>
+                                <span className="detail-value">{weather.wind_speed} km/h</span>
                             </div>
                             <div className="weather-detail-item">
                                 <span className="detail-label">Humidity</span>
@@ -278,10 +279,11 @@ const WeatherSearch = ({ token, onStoreSuccess }) => {
             )}
 
 
-
-            <div className="chart-container">
-                <p>Chart</p>
-            </div>
+            {weather && (
+                <div className="chart-container">
+                    <CompareWeather />
+                </div>
+            )}
 
             <div className="weather-detail-container">
                 <p>Weather Details</p>
