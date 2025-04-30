@@ -283,7 +283,7 @@ const WeatherSearch = ({ token, onStoreSuccess }) => {
 
 const getWeatherQuote = (description) => {
     const quotes = {
-        "clear sky": "The sun is shining, and so are you.",
+        "clear sky": "Pure bliss.",
         "few clouds": "Clouds come and go, just like worries.",
         "scattered clouds": "Every cloud has a silver lining.",
         "broken clouds": "Through the clouds, the sun still shines.",
