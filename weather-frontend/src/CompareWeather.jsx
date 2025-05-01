@@ -47,19 +47,39 @@ const CompareWeather = () => {
             wind: "km/h",
         };
     
+        const normalizedData = weatherData.map((item) => ({
+            city: item.city,
+            value: item[activeTab],
+        }));
+    
         return (
             <ResponsiveContainer width="100%" height={300}>
-                <BarChart data={weatherData} margin={{ top: 20, right: 20, left: 0, bottom: 5 }}>
+                <BarChart data={normalizedData} margin={{ top: 20, right: 20, left: 0, bottom: 5 }}>
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis dataKey="city" />
                     <YAxis tickFormatter={(value) => `${value} ${units[activeTab]}`} />
                     <Tooltip formatter={(value) => `${value} ${units[activeTab]}`} />
-                    <Legend formatter={(value) => value.charAt(0).toUpperCase() + value.slice(1)} />
-                    <Bar dataKey={activeTab} fill="#4a6fa5" />
+                    <Legend
+                        payload={[
+                            {
+                                value: activeTab.charAt(0).toUpperCase() + activeTab.slice(1),
+                                type: 'square',
+                                color: '#4a6fa5',
+                            },
+                        ]}
+                    />
+                    <Bar
+                        dataKey="value"
+                        fill="#4a6fa5"
+                        isAnimationActive={true}
+                        animationDuration={800}
+                        animationEasing="ease-in-out"
+                    />
                 </BarChart>
             </ResponsiveContainer>
         );
     };
+    
     
 
     return (
@@ -82,7 +102,7 @@ const CompareWeather = () => {
                         className={`tab-button ${activeTab === 'temperature' ? 'active' : ''}`}
                         onClick={() => setActiveTab('temperature')}
                         >
-                        🌡 Tempt
+                        🌡 Temp
                     </button>
                     <button
                         className={`tab-button ${activeTab === 'precipitation' ? 'active' : ''}`}
