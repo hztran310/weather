@@ -135,24 +135,45 @@ const WeatherSearch = ({ token, onStoreSuccess }) => {
 
     // Initialize the map once the weather data is available
     useEffect(() => {
-        if (weather && weather.lat && weather.lon && !mapRef.current) {
-            mapRef.current = L.map('map').setView([weather.lat, weather.lon], 10);  // Initialize the map
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(mapRef.current);
-
-            // Add a marker
+        if (!weather || !weather.lat || !weather.lon) return;
+    
+        if (!mapRef.current) {
+            // Initial map creation
+            mapRef.current = L.map('map').setView([weather.lat, weather.lon], 10);
+    
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors'
+            }).addTo(mapRef.current);
+    
             L.marker([weather.lat, weather.lon])
                 .addTo(mapRef.current)
-                .bindPopup(`<b>${weather.city}</b><br>${weather.description}`)
+                .bindPopup(formatCityName(weather.city))
+                .openPopup();
+        } else {
+            // Fly to new city with smooth pan
+            mapRef.current.flyTo([weather.lat, weather.lon], 10, {
+                animate: true,
+                duration: 1.5
+            });
+    
+            // Remove old markers
+            mapRef.current.eachLayer(layer => {
+                if (layer instanceof L.Marker) mapRef.current.removeLayer(layer);
+            });
+    
+            // Add new marker
+            L.marker([weather.lat, weather.lon])
+                .addTo(mapRef.current)
+                .bindPopup(formatCityName(weather.city))
                 .openPopup();
         }
-
-        return () => {
-            // Cleanup map on unmount
-            if (mapRef.current) {
-                mapRef.current.remove();
-            }
-        };
-    }, [weather]); // Runs when weather data changes
+    
+    }, [weather]);
+    
+    // Helper function to format city name
+    const formatCityName = (name) =>
+        name.split(" ").map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(" ");
+    
 
     
     
