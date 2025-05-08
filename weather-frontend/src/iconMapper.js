@@ -9,6 +9,7 @@ import tornado from '/image/weather-icon/hurricane_storm_tornado_icon.png';
 import moonrise from '/image/weather-icon/moon_moonrise_night_icon.png';
 import moonSnow from '/image/weather-icon/moon_night_snow_icon.png';
 import sunny from '/image/weather-icon/sun_sunny_temperature_icon.png';
+import cloudRain from '/image/weather-icon/clouds_cloudy_forecast_rain_icon.png';
 
 export const getWeatherIcon = (description = "", hour = 12) => {
     const desc = description.toLowerCase();

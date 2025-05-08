@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "./WeatherSearch.css";
 import tzLookup from 'tz-lookup';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
@@ -27,6 +27,9 @@ const WeatherSearch = ({ token, onStoreSuccess }) => {
     const [error, setError] = useState(null);
     const [suggestions, setSuggestions] = useState([]);
     const [mapCenter, setMapCenter] = useState(null);
+
+    const mapRef = useRef(null);  // Initialize mapRef using useRef
+
 
     const API_KEY = "b02beb5f6754f998a9d86759f9d5c3cf";
 
@@ -129,9 +132,52 @@ const WeatherSearch = ({ token, onStoreSuccess }) => {
         };
         return date.toLocaleTimeString('en-US', options);
     };
+
+    // Initialize the map once the weather data is available
+    useEffect(() => {
+        if (!weather || !weather.lat || !weather.lon) return;
+    
+        if (!mapRef.current) {
+            // Initial map creation
+            mapRef.current = L.map('map').setView([weather.lat, weather.lon], 10);
+    
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors'
+            }).addTo(mapRef.current);
+    
+            L.marker([weather.lat, weather.lon])
+                .addTo(mapRef.current)
+                .bindPopup(formatCityName(weather.city))
+                .openPopup();
+        } else {
+            // Fly to new city with smooth pan
+            mapRef.current.flyTo([weather.lat, weather.lon], 10, {
+                animate: true,
+                duration: 1.5
+            });
+    
+            // Remove old markers
+            mapRef.current.eachLayer(layer => {
+                if (layer instanceof L.Marker) mapRef.current.removeLayer(layer);
+            });
+    
+            // Add new marker
+            L.marker([weather.lat, weather.lon])
+                .addTo(mapRef.current)
+                .bindPopup(formatCityName(weather.city))
+                .openPopup();
+        }
+    
+    }, [weather]);
+    
+    // Helper function to format city name
+    const formatCityName = (name) =>
+        name.split(" ").map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(" ");
+    
+
     
     
-    return (
+     return (
         <div className={`weather-container ${weather ? "active" : ""}`}>
             <div className="search-box">
                 <input
@@ -262,19 +308,7 @@ const WeatherSearch = ({ token, onStoreSuccess }) => {
 
             {weather && weather.lat && weather.lon && (
                 <div className="map-container">
-                    <MapContainer
-                        center={[weather.lat, weather.lon]}
-                        zoom={10}
-                        style={{ width: "100%", height: "100%", borderRadius: "20px" }}
-                        scrollWheelZoom={false}
-                    >
-                        <MapWithPan
-                            lat={weather.lat}
-                            lon={weather.lon}
-                            city={weather.city}
-                            description={weather.description}
-                        />
-                    </MapContainer>
+                    <div id="map" style={{ width: "100%", height: "100%", borderRadius: "20px" }}></div> {/* Map container */}
                 </div>
             )}
 
