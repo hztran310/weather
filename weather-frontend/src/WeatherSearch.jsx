@@ -7,9 +7,10 @@ import L from 'leaflet';
 import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png';
 import markerIcon from 'leaflet/dist/images/marker-icon.png';
 import markerShadow from 'leaflet/dist/images/marker-shadow.png';
-import MapWithPan from './MapWithPan';
 import { getWeatherIcon } from "./iconMapper";
 import CompareWeather from './CompareWeather.jsx';
+import LuckyCard from "./MoodCard.jsx";
+
 
 delete L.Icon.Default.prototype._getIconUrl;
 
@@ -319,9 +320,12 @@ const WeatherSearch = ({ token, onStoreSuccess }) => {
                 </div>
             )}
 
+            {weather && (
             <div className="weather-detail-container">
-                <p>Weather Details</p>
+                <LuckyCard />
             </div>
+            )}
+
         </div>
     );    
 };
