@@ -21,6 +21,7 @@ const LuckyCard = () => {
         const randomZodiac = sampleZodiacs[Math.floor(Math.random() * sampleZodiacs.length)];
         const signName = randomZodiac.sign.split(" ")[0].toLowerCase();
   
+  
         const res = await fetch(`http://localhost:3001/horoscope?sign=${signName}&day=TODAY`);
         const data = await res.json();
   
