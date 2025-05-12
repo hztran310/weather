@@ -1,11 +1,14 @@
 .lucky-card {
     padding: 8px;
-    border-radius: 16px;
-    background-color: #210F37;
+    /* border-radius: 16px; */
+    /* background-color: #210F37; */
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
     color: #A0C1B8;
     font-family: 'Segoe UI', sans-serif;
     transition: all 0.3s ease-in-out;
+    /* width: 35%; */
+    /* height: 30%; */
+    border-radius: 20px;
   }
   
 .lucky-card h3 {
