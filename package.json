@@ -26,5 +26,8 @@
     "url": "https://github.com/hztran310/weather/issues"
   },
   "homepage": "https://github.com/hztran310/weather#readme",
-  "description": ""
+  "description": "",
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
 }
