@@ -1,9 +1,10 @@
-from sqlalchemy import Column, Integer, String
+from sqlalchemy import Column, Integer, String, Date
 from sqlalchemy.orm import relationship, Mapped, mapped_column
 from util import verify_password
 from model.base import Base
 from typing import Optional
 from pydantic import BaseModel  # Pydantic import for serialization
+import datetime
 
 # Define the User model here
 class User(Base):
@@ -11,6 +12,8 @@ class User(Base):
     
     id = Column(Integer, primary_key=True, index=True)
     username = Column(String, unique=True, index=True)
+    birthday = Column(Date, nullable=True)
+    hashed_password = Column(String)  # ✅ add this
     
     # Use string reference for relationship
     weather_data = relationship("WeatherData", back_populates="owner")
@@ -31,14 +34,20 @@ class TokenData(Base):
     username: Mapped[Optional[str]] = mapped_column(String, nullable=True)
 
 
-class UserInDB(User):
-    hashed_password = Column(String)
+class UserInDB(BaseModel):
+    username: str
+    hashed_password: str
+    birthday: Optional[datetime.date]
+
+    class Config:
+        orm_mode = True
 
 
 # Pydantic model to serialize the User response data
 class UserResponse(BaseModel):  # No SQLAlchemy here
     id: int
     username: str
+    birthday: Optional[datetime.date]
     
     class Config:
         orm_mode = True  # This tells Pydantic to treat ORM models as dictionaries for serialization

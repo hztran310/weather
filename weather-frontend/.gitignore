@@ -27,3 +27,6 @@ node_modules/
 
 __pycache__/
 
+reset_db.py
+
+create_example_user.py
