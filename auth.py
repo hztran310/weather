@@ -35,21 +35,14 @@ def verify_token(token: str):
     except JWTError:
         return None
 
-def authenticate_user(db: Session, username: str, password: str):
-    user = db.query(UserInDB).filter(UserInDB.username == username).first()  # Query UserInDB directly
-
+def authenticate_user(db, username: str, password: str):
+    user = db.query(User).filter(User.username == username).first()  # ✅ FIXED
     if not user:
-        return None
-
-    # Check if the user is of type UserInDB and then access hashed_password
-    if isinstance(user, UserInDB):
-        if not verify_password(password, user.hashed_password):
-            return None
-    else:
-        # If user is not of type UserInDB, you might want to handle it differently
-        return None
-
+        return False
+    if not verify_password(password, user.hashed_password):
+        return False
     return user
+
 def get_user(db: Session, username: str):
     return db.query(User).filter(User.username == username).first()
 
