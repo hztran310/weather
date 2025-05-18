@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-const LoginForm = ({ setToken }) => {
+const LoginForm = ({ setToken, activeTab, setActiveTab }) => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
 
@@ -24,8 +24,7 @@ const LoginForm = ({ setToken }) => {
 
             const data = await response.json();
             setToken(data.access_token);
-        }
-        catch (error) {
+        } catch (error) {
             alert('Login error: ' + error.message);
         }
     };
@@ -35,11 +34,39 @@ const LoginForm = ({ setToken }) => {
             <div style={styles.innerContainer}>
                 {/* Left side - image */}
                 <div style={styles.leftSide}></div>
-                
+
                 {/* Right side - form */}
                 <div style={styles.rightSide}>
                     <form onSubmit={handleLogin} style={styles.form}>
-                        <h2 style={styles.heading}>Welcome</h2>
+                        <h2 style={styles.heading}>૮꒰ ˶• ༝ •˶꒱ა ♡</h2>
+
+                        {/* Tabs directly under Welcome */}
+                        <div style={styles.tabWrapper}>
+                            <button
+                                type="button"
+                                onClick={() => setActiveTab("login")}
+                                style={{
+                                    ...styles.tabButton,
+                                    backgroundColor: activeTab === "login" ? "#4665a6" : "transparent",
+                                    color: activeTab === "login" ? "white" : "black"
+                                }}
+                            >
+                                🔐 Login
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => setActiveTab("register")}
+                                style={{
+                                    ...styles.tabButton,
+                                    backgroundColor: activeTab === "register" ? "#4665a6" : "transparent",
+                                    color: activeTab === "register" ? "white" : "black"
+                                }}
+                            >
+                                ✍️ Register
+                            </button>
+                        </div>
+
+                        {/* Form fields */}
                         <input
                             style={styles.input}
                             type="text"
@@ -71,15 +98,15 @@ const styles = {
         alignItems: 'center',
         height: '100vh',
         width: '100vw',
-        backgroundColor: '#8E7DBE', // Background color for the outer area
+        backgroundColor: '#8E7DBE',
     },
     innerContainer: {
         display: 'flex',
-        height: '80%', // You can adjust this
-        width: '75%', // 75% of screen width
-        borderRadius: '15px', // Rounded corners for the container
-        overflow: 'hidden', // Ensures the image stays within rounded borders
-        boxShadow: '0 10px 25px rgba(0, 0, 0, 0.1)', // Nice shadow effect
+        height: '80%',
+        width: '75%',
+        borderRadius: '15px',
+        overflow: 'hidden',
+        boxShadow: '0 10px 25px rgba(0, 0, 0, 0.1)',
     },
     leftSide: {
         flex: 1,
@@ -109,9 +136,25 @@ const styles = {
     },
     heading: {
         textAlign: 'center',
-        margin: '0 0 20px 0',
+        margin: '0 0 10px 0',
         color: '#F7CFD8',
-        fontSize: '2rem', // Larger heading
+        fontSize: '2rem',
+    },
+    tabWrapper: {
+        display: 'flex',
+        backgroundColor: '#e5dcfb',
+        borderRadius: '999px',
+        padding: '0.25rem',
+        marginBottom: '1rem',
+    },
+    tabButton: {
+        padding: '0.5rem 1rem',
+        border: 'none',
+        borderRadius: '999px',
+        cursor: 'pointer',
+        fontWeight: 'bold',
+        transition: '0.3s',
+        backgroundColor: 'transparent',
     },
     input: {
         padding: '12px 20px',
@@ -131,12 +174,7 @@ const styles = {
         fontSize: '16px',
         cursor: 'pointer',
         width: '50%',
-        transition: 'all 0.3s',
         fontWeight: 'bold',
-        ':hover': {
-            backgroundColor: '#8cc2c2',
-            transform: 'translateY(-2px)',
-        }
     },
 };
 
