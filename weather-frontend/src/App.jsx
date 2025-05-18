@@ -17,17 +17,25 @@ function App() {
                 },
             })
                 .then((res) => res.json())
-                .then((data) => console.log(data)) // or setWeatherData(data)
+                .then((data) => console.log(data)) // You can later replace this with setWeatherData(data)
                 .catch((err) => console.error("Error fetching weather:", err));
         }
     }, [token]);
 
     const renderForm = () => {
-        if (activeTab === "login") {
-            return <LoginForm setToken={setToken} activeTab={activeTab} setActiveTab={setActiveTab} />;
-        } else {
-            return <Register onRegister={() => setActiveTab("login")} activeTab={activeTab} setActiveTab={setActiveTab} />;
-        }
+        return activeTab === "login" ? (
+            <LoginForm
+                setToken={setToken}
+                activeTab={activeTab}
+                setActiveTab={setActiveTab}
+            />
+        ) : (
+            <Register
+                onRegisterSuccess={() => setActiveTab("login")}
+                activeTab={activeTab}
+                setActiveTab={setActiveTab}
+            />
+        );
     };
 
     return (

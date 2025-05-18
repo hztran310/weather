@@ -63,14 +63,20 @@ def get_weather(city: str):
     return weather_info
 
     
+class RegisterRequest(BaseModel):
+    username: str
+    password: str
+    birthday: date
+
 @app.post("/register")
-def register(username: str, password: str, birthday: date, db: Session = Depends(get_db)):
-    hashed_password = hash_password(password)
-    db_user = User(username=username, hashed_password=hashed_password, birthday=birthday)  # Use UserInDB
+def register(user: RegisterRequest, db: Session = Depends(get_db)):
+    hashed_password = hash_password(user.password)
+    db_user = User(username=user.username, hashed_password=hashed_password, birthday=user.birthday)
     db.add(db_user)
     db.commit()
     db.refresh(db_user)
     return {"msg": "User created successfully"}
+
 
 # Login and generate JWT token
 @app.post("/token")
