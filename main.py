@@ -2,12 +2,13 @@ from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy.orm import Session
 import requests
 from database import get_db
-from model import WeatherData, WeatherRequest, User, UserResponse, UserInDB  # Import UserResponse here
-from auth import create_access_token, hash_password, get_current_user, authenticate_user, get_current_active_user
+from model import WeatherData, User  # Import UserResponse here
+from auth import create_access_token, hash_password, get_current_user, authenticate_user
 from fastapi.security import OAuth2PasswordRequestForm
 from datetime import timedelta
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
+from datetime import date
 
 class CityRequest(BaseModel):
     city: str
@@ -61,15 +62,21 @@ def get_weather(city: str):
      
     return weather_info
 
-# Register a new user (for testing purposes)
+    
+class RegisterRequest(BaseModel):
+    username: str
+    password: str
+    birthday: date
+
 @app.post("/register")
-def register(username: str, password: str, db: Session = Depends(get_db)):
-    hashed_password = hash_password(password)
-    db_user = UserInDB(username=username, hashed_password=hashed_password)  # Use UserInDB
+def register(user: RegisterRequest, db: Session = Depends(get_db)):
+    hashed_password = hash_password(user.password)
+    db_user = User(username=user.username, hashed_password=hashed_password, birthday=user.birthday)
     db.add(db_user)
     db.commit()
     db.refresh(db_user)
     return {"msg": "User created successfully"}
+
 
 # Login and generate JWT token
 @app.post("/token")

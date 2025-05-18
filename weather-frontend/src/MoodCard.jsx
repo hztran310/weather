@@ -8,7 +8,12 @@ const sampleZodiacs = [
   { sign: "Cancer ⁺˚⋆♋︎₊⊹" },
   { sign: "Leo ♌︎ ☪︎ " },
   { sign: "Virgo ♍︎⋆｡°✩" },
-  { sign: "Libra ⚖︎" }
+  { sign: "Libra ⚖︎" },
+  { sign: "Scorpio ఌ︎"},
+  { sign: "Sagittarus ♐︎"},
+  { sign: "Capricorn ♑︎"},
+  { sign: "Aquarius ♒︎"},
+  { sign: "Pisces ♓︎"}
 ];
 
 const LuckyCard = () => {
