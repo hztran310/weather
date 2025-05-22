@@ -6,21 +6,25 @@ import WeatherSearch from "./WeatherSearch";
 function App() {
     const [token, setToken] = useState("");
     const [activeTab, setActiveTab] = useState("login");
+    const [birthday, setBirthday] = useState(null);
 
     useEffect(() => {
         if (token) {
-            fetch("http://localhost:8000/weather/my_data", {
+            fetch("http://localhost:8000/me", {
                 method: "GET",
                 headers: {
                     "Authorization": `Bearer ${token}`,
                     "Content-Type": "application/json",
                 },
             })
-                .then((res) => res.json())
-                .then((data) => console.log(data)) // You can later replace this with setWeatherData(data)
-                .catch((err) => console.error("Error fetching weather:", err));
+            .then((res) => res.json())
+            .then((data) => {
+                setBirthday(data.birthday);
+            })
+            .catch((err) => console.error("Error fetching user info:", err));
         }
     }, [token]);
+
 
     const renderForm = () => {
         return activeTab === "login" ? (
@@ -40,7 +44,9 @@ function App() {
 
     return (
         <div>
-            {!token ? renderForm() : <WeatherSearch token={token} onStoreSuccess={() => {}} />}
+            {!token ? renderForm() : (
+                <WeatherSearch token={token} onStoreSuccess={() => {}} birthday={birthday} />
+            )}
         </div>
     );
 }
