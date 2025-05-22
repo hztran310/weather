@@ -126,3 +126,14 @@ def get_user_weather_data(db: Session = Depends(get_db), current_user: User = De
         raise HTTPException(status_code=404, detail="No weather data found for this user")
     
     return weather_data
+
+
+@app.get("/me")
+def read_users_me(current_user: User = Depends(get_current_user)):
+    return {
+        "id": current_user.id,
+        "username": current_user.username,
+        "birthday": current_user.birthday
+    }
+
+

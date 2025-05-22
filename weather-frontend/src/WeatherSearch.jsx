@@ -22,12 +22,14 @@ L.Icon.Default.mergeOptions({
 
 
 
-const WeatherSearch = ({ token, onStoreSuccess }) => {
+const WeatherSearch = ({ token, onStoreSuccess, birthday }) => {
     const [city, setCity] = useState("");
     const [weather, setWeather] = useState(null);
     const [error, setError] = useState(null);
     const [suggestions, setSuggestions] = useState([]);
     const [mapCenter, setMapCenter] = useState(null);
+    const [zodiac, setZodiac] = useState(null);
+    const [horoscope, setHoroscope] = useState(null);
 
     const mapRef = useRef(null);  // Initialize mapRef using useRef
 
@@ -322,7 +324,7 @@ const WeatherSearch = ({ token, onStoreSuccess }) => {
 
             {weather && (
             <div className="weather-detail-container">
-                <LuckyCard />
+                <LuckyCard birthday={birthday} zodiac={zodiac} horoscope={horoscope} />
             </div>
             )}
 
