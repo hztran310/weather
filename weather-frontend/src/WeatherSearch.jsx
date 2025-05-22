@@ -28,6 +28,8 @@ const WeatherSearch = ({ token, onStoreSuccess, birthday }) => {
     const [error, setError] = useState(null);
     const [suggestions, setSuggestions] = useState([]);
     const [mapCenter, setMapCenter] = useState(null);
+    const [zodiac, setZodiac] = useState(null);
+    const [horoscope, setHoroscope] = useState(null);
 
     const mapRef = useRef(null);  // Initialize mapRef using useRef
 
@@ -322,7 +324,7 @@ const WeatherSearch = ({ token, onStoreSuccess, birthday }) => {
 
             {weather && (
             <div className="weather-detail-container">
-                <LuckyCard birthday={birthday} />
+                <LuckyCard birthday={birthday} zodiac={zodiac} horoscope={horoscope} />
             </div>
             )}
 
