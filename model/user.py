@@ -5,6 +5,7 @@ from model.base import Base
 from util import verify_password
 from typing import Optional
 from pydantic import BaseModel
+from typing import Optional
 import datetime
 
 class User(Base):
@@ -22,16 +23,13 @@ class User(Base):
         return verify_password(password, self.hashed_password)
 
 
-class Token(Base):
-    __tablename__ = "tokens"
-    access_token = Column(String, primary_key=True, index=True)
-    token_type = Column(String, default="bearer")
+class Token(BaseModel):
+    access_token: str
+    token_type: str = "bearer"    
 
 
-class TokenData(Base):
-    __tablename__ = "token_data"
-    id = Column(Integer, primary_key=True, index=True)
-    username = Column(String, nullable=True)
+class TokenData(BaseModel):
+    username: Optional[str] = None
 
 
 class UserInDB(BaseModel):

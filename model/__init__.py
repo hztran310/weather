@@ -1,8 +1,8 @@
 # model/__init__.py
-from .user import User, UserInDB, Token, TokenData, UserResponse
+from .user import User, UserInDB, UserResponse
 from .weather import WeatherData, WeatherRequest, WeatherCity
 
 __all__ = [
-    "User", "UserInDB", "Token", "TokenData", "UserResponse",
+    "User", "UserInDB", "UserResponse",
     "WeatherData", "WeatherRequest", "WeatherCity"
 ]
