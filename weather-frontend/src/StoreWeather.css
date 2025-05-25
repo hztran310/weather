@@ -1,0 +1,41 @@
+.stored-weather-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.stored-weather-card {
+  display: flex;
+  align-items: center;
+  padding: 1rem;
+  border-radius: 12px;
+  background: #f4f7ff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  min-width: 180px;
+}
+
+.weather-icon {
+  width: 40px;
+  height: 40px;
+  margin-right: 12px;
+}
+
+.weather-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.city-name {
+  font-weight: bold;
+  font-size: 1rem;
+}
+
+.temp {
+  font-size: 0.9rem;
+  color: #555;
+}
+
+.description {
+  font-size: 0.85rem;
+  color: #666;
+}

@@ -2,7 +2,7 @@ from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy.orm import Session
 import requests
 from database import get_db
-from model import WeatherData, User  # Import UserResponse here
+from model import WeatherData, User, WeatherCity  # Import UserResponse here
 from auth import create_access_token, hash_password, get_current_user, authenticate_user
 from fastapi.security import OAuth2PasswordRequestForm
 from datetime import timedelta
@@ -93,29 +93,19 @@ def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depend
     return {"access_token": access_token, "token_type": "bearer"}
 
 @app.post("/weather/store")
-def store_weather(
+def store_city(
     request: CityRequest,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),  # Ensure user is authenticated
+    current_user: User = Depends(get_current_user),
 ):
-    city = request.city
-    weather = get_weather(city)  # Get weather from API
-    
-    if not weather:
-        raise HTTPException(status_code=404, detail="Weather data not found")
+    existing = db.query(WeatherCity).filter_by(user_id=current_user.id, city=request.city).first()
+    if existing:
+        return {"message": "City already stored."}
 
-    # Save to database with user_id
-    new_weather = WeatherData(
-        city=weather["city"],
-        temperature=weather["temperature"],
-        humidity=weather["humidity"],
-        wind_speed=weather["wind_speed"],
-        user_id=current_user.id  # ✅ Fix: Store the user who added the data
-    )
-    
-    db.add(new_weather)
+    new_entry = WeatherCity(city=request.city, user_id=current_user.id)
+    db.add(new_entry)
     db.commit()
-    return {"message": "Weather data saved successfully"}
+    return {"message": "City stored successfully."}
 
 @app.get("/weather/my_data")
 def get_user_weather_data(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):

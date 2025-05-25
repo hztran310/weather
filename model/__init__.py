@@ -1,6 +1,8 @@
-# models/__init__.py
-from .user import User, UserInDB, Token, TokenData, UserResponse  # Import User and related classes
-from .weather import WeatherData, WeatherRequest
+# model/__init__.py
+from .user import User, UserInDB, Token, TokenData, UserResponse
+from .weather import WeatherData, WeatherRequest, WeatherCity
 
-# This ensures all models are loaded before relationships are resolved
-__all__ = ['User', 'WeatherData', 'WeatherRequest', 'UserInDB', 'Token', 'TokenData', 'UserResponse']
+__all__ = [
+    "User", "UserInDB", "Token", "TokenData", "UserResponse",
+    "WeatherData", "WeatherRequest", "WeatherCity"
+]
