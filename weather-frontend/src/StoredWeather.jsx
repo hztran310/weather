@@ -71,8 +71,8 @@ const StoredWeather = ({ token }) => {
               ) : (
                 <div className="weather-icon">❓</div>
               )}
-              <div className="weather-info">
-                <div className="city-name">{entry.city}</div>
+              <div className="weather-info-summary">
+                <div className="city-name">Hello</div>
                 <div className="temp">
                   {entry.temperature !== undefined
                     ? `${entry.temperature}°C`
