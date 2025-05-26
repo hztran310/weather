@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Depends, HTTPException
+from fastapi import FastAPI, Depends, HTTPException, APIRouter
 from sqlalchemy.orm import Session
 import requests
 from database import get_db
@@ -17,6 +17,7 @@ class CityRequest(BaseModel):
 # FastAPI app
 app = FastAPI()
 
+router = APIRouter()
 
 # Add CORS middleware to allow frontend requests
 app.add_middleware(
@@ -31,7 +32,7 @@ app.add_middleware(
 API_KEY = "b02beb5f6754f998a9d86759f9d5c3cf"
 
 # Fetch weather data from OpenWeather API
-@app.get("/weather")
+@router.get("/weather")
 def get_weather(city: str):
     URL = f"http://api.openweathermap.org/data/2.5/weather?q={city}&appid={API_KEY}&units=metric"
     response = requests.get(URL)
@@ -68,7 +69,7 @@ class RegisterRequest(BaseModel):
     password: str
     birthday: date
 
-@app.post("/register")
+@router.post("/register")
 def register(user: RegisterRequest, db: Session = Depends(get_db)):
     hashed_password = hash_password(user.password)
     db_user = User(username=user.username, hashed_password=hashed_password, birthday=user.birthday)
@@ -79,7 +80,7 @@ def register(user: RegisterRequest, db: Session = Depends(get_db)):
 
 
 # Login and generate JWT token
-@app.post("/token")
+@router.post("/token")
 def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
     username = form_data.username
     password = form_data.password
@@ -92,7 +93,7 @@ def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depend
     
     return {"access_token": access_token, "token_type": "bearer"}
 
-@app.post("/weather/store")
+@router.post("/weather/store")
 def store_city(
     request: CityRequest,
     db: Session = Depends(get_db),
@@ -107,18 +108,15 @@ def store_city(
     db.commit()
     return {"message": "City stored successfully."}
 
-@app.get("/weather/my_data")
-def get_user_weather_data(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
-    # Fetch weather data associated with the current user
-    weather_data = db.query(WeatherData).filter(WeatherData.user_id == current_user.id).all()
-    
-    if not weather_data:
-        raise HTTPException(status_code=404, detail="No weather data found for this user")
-    
-    return weather_data
+@router.get("/weather/my_data")
+def get_saved_cities(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    saved = db.query(WeatherCity).filter_by(user_id=current_user.id).all()
+    return [{"id": s.id, "city": s.city} for s in saved]
 
-
-@app.get("/me")
+@router.get("/me")
 def read_users_me(current_user: User = Depends(get_current_user)):
     return {
         "id": current_user.id,
@@ -126,4 +124,6 @@ def read_users_me(current_user: User = Depends(get_current_user)):
         "birthday": current_user.birthday
     }
 
+
+app.include_router(router)
 

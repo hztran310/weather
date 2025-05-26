@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import "./WeatherSearch.css";
 import tzLookup from 'tz-lookup';
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png';
@@ -10,6 +9,7 @@ import markerShadow from 'leaflet/dist/images/marker-shadow.png';
 import { getWeatherIcon } from "./iconMapper";
 import CompareWeather from './CompareWeather.jsx';
 import LuckyCard from "./MoodCard.jsx";
+import { useNavigate } from "react-router-dom";
 
 
 delete L.Icon.Default.prototype._getIconUrl;
@@ -30,9 +30,11 @@ const WeatherSearch = ({ token, onStoreSuccess, birthday }) => {
     const [mapCenter, setMapCenter] = useState(null);
     const [zodiac, setZodiac] = useState(null);
     const [horoscope, setHoroscope] = useState(null);
+    const [input, setInput] = useState("");
 
     const mapRef = useRef(null);  // Initialize mapRef using useRef
 
+    const navigate = useNavigate();
 
     const API_KEY = "b02beb5f6754f998a9d86759f9d5c3cf";
 
@@ -46,6 +48,7 @@ const WeatherSearch = ({ token, onStoreSuccess, birthday }) => {
     const handleInputChange = (e) => {
         const value = e.target.value;
         setCity(value);
+        setInput(value);
         fetchSugesstion(value);
     }
 
@@ -54,7 +57,7 @@ const WeatherSearch = ({ token, onStoreSuccess, birthday }) => {
         setCity(formatted);
         setSuggestions([]);
         await checkWeather();
-        setCity(""); // Clear the input after search
+        setInput("");
     }
     
 
@@ -184,12 +187,12 @@ const WeatherSearch = ({ token, onStoreSuccess, birthday }) => {
         <div className={`weather-container ${weather ? "active" : ""}`}>
             <div className="search-box">
                 <input
-                    value={city}
+                    value={input}
                     onChange={handleInputChange}
                     onKeyDown={async (e) => {
                         if (e.key === "Enter") {
                             await checkWeather();
-                            setCity("");  // Clear input after search
+                            setInput("");  // Clear input after search
                             setSuggestions([]);
                         }
                     }}                    
@@ -327,6 +330,22 @@ const WeatherSearch = ({ token, onStoreSuccess, birthday }) => {
                 <LuckyCard birthday={birthday} zodiac={zodiac} horoscope={horoscope} />
             </div>
             )}
+
+            <button
+                onClick={() => navigate("/stored")}
+                style={{
+                    marginTop: '10px',
+                    width: '100%',
+                    padding: '10px',
+                    backgroundColor: '#2d6a4f',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '20px',
+                    cursor: 'pointer'
+                }}
+            >
+                View Stored Data
+            </button>
 
         </div>
     );    
