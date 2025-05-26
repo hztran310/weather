@@ -32,10 +32,8 @@ const StoredWeather = ({ token }) => {
         const results = await Promise.all(
             storedCities.map(async ({ city }) => {
             try {
-                console.log("Fetching weather for:", city);
                 const res = await fetch(`http://localhost:8000/weather?city=${encodeURIComponent(city)}`);
                 const data = await res.json();
-                console.log("Response for", city, ":", data);
                 return { ...data, city};
             } catch (err) {
                 console.error("Error fetching for", city);
@@ -61,6 +59,7 @@ const StoredWeather = ({ token }) => {
           <p>No cities stored or data loading...</p>
         ) : (
           weatherData.map((entry, index) => (
+            !entry.city ? null : (
             <div className="stored-weather-card" key={index}>
               {entry.description ? (
                 <img
@@ -72,7 +71,7 @@ const StoredWeather = ({ token }) => {
                 <div className="weather-icon">❓</div>
               )}
               <div className="weather-info-summary">
-                <div className="city-name">Hello</div>
+                <div className="city-name">{formatCityName(entry.city)}</div>
                 <div className="temp">
                   {entry.temperature !== undefined
                     ? `${entry.temperature}°C`
@@ -89,10 +88,19 @@ const StoredWeather = ({ token }) => {
               </div>
             </div>
           ))
-        )}
+        ))}
       </div>
     </div>
   );
 };
+
+// Capitalizes each word in a city name string
+const formatCityName = (name) =>
+  name
+    ? name
+        .split(" ")
+        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(" ")
+    : "";
 
 export default StoredWeather;

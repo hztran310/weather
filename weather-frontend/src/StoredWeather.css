@@ -14,7 +14,7 @@ body {
   align-items: center;
   padding: 1rem;
   border-radius: 12px;
-  background: #f4f7ff;
+  background: #F4F8D3;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
   min-width: 180px;
   min-height: 80px;
@@ -29,12 +29,10 @@ body {
 .weather-info-summary {
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  color: white;
-  padding: 0.5rem;        /* Optional: for better visibility */
+  color: #3D365C;
   border-radius: 8px;     /* Optional: for rounded corners */
-  z-index: 10;
-  position: relative; /* Ensure it stacks correctly */
+  align-items: flex-end;
+  width: 100%;
 }
 
 .city-name {
