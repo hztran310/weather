@@ -2,8 +2,6 @@
 
 WeatherVerse is a full-stack weather forecasting app that allows users to search for live weather data, store their favorite cities, and receive personalized horoscope insights based on their zodiac sign.
 
----
-
 ## 📂 Project Structure
 
 weatherverse/
@@ -42,8 +40,6 @@ weatherverse/
 │       ├── WeatherSearch.css
 │       └── WeatherSearch.jsx
 
-
----
 
 ## ⚙️ Prerequisites
 
