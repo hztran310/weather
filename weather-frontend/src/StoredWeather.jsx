@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { getWeatherIcon } from "./iconMapper"; 
+import { useNavigate } from "react-router-dom";
 import "./StoredWeather.css"; 
 
 const StoredWeather = ({ token }) => {
   const [storedCities, setStoredCities] = useState([]);
   const [weatherData, setWeatherData] = useState([]);
   const [error, setError] = useState("");
+  const navigate = useNavigate();
 
-  // 1. Fetch list of stored cities
   useEffect(() => {
     if (!token) return;
 
@@ -20,35 +21,32 @@ const StoredWeather = ({ token }) => {
         if (!res.ok) throw new Error("Failed to fetch stored cities");
         return res.json();
       })
-      .then((data) => {
-        setStoredCities(data);
-      })
+      .then((data) => setStoredCities(data))
       .catch((err) => setError(err.message));
   }, [token]);
 
-  // 2. Fetch live weather data for each stored city
   useEffect(() => {
-      const fetchWeatherForCities = async () => {
-        const results = await Promise.all(
-            storedCities.map(async ({ city }) => {
-            try {
-                const res = await fetch(`http://localhost:8000/weather?city=${encodeURIComponent(city)}`);
-                const data = await res.json();
-                return { ...data, city};
-            } catch (err) {
-                console.error("Error fetching for", city);
-                return { city, error: "Failed to fetch weather data" };
-            }
-            })
-        );
-        setWeatherData(results);
-        };
+    const fetchWeatherForCities = async () => {
+      const results = await Promise.all(
+        storedCities.map(async ({ city }) => {
+          try {
+            const res = await fetch(`http://localhost:8000/weather?city=${encodeURIComponent(city)}`);
+            const data = await res.json();
+            return { ...data, city };
+          } catch (err) {
+            return { city, error: "Failed to fetch weather data" };
+          }
+        })
+      );
+      setWeatherData(results);
+    };
 
-
-    if (storedCities.length > 0) {
-      fetchWeatherForCities();
-    }
+    if (storedCities.length > 0) fetchWeatherForCities();
   }, [storedCities]);
+
+  const handleCardClick = (city) => {
+    navigate(`/?city=${encodeURIComponent(city)}`);
+  };
 
   return (
     <div className="stored-weather">
@@ -60,41 +58,46 @@ const StoredWeather = ({ token }) => {
         ) : (
           weatherData.map((entry, index) => (
             !entry.city ? null : (
-            <div className="stored-weather-card" key={index}>
-              {entry.description ? (
-                <img
-                  src={getWeatherIcon(entry.description)}
-                  alt={entry.description}
-                  className="weather-icon"
-                />
-              ) : (
-                <div className="weather-icon">❓</div>
-              )}
-              <div className="weather-info-summary">
-                <div className="city-name">{formatCityName(entry.city)}</div>
-                <div className="temp">
-                  {entry.temperature !== undefined
-                    ? `${entry.temperature}°C`
-                    : "N/A"}
-                </div>
-                <div className="description">
-                  {entry.description
-                    ? entry.description
-                        .split(" ")
-                        .map((word) => word[0].toUpperCase() + word.slice(1))
-                        .join(" ")
-                    : "No description"}
+              <div
+                className="stored-weather-card"
+                key={index}
+                onClick={() => handleCardClick(entry.city)}
+                style={{ cursor: "pointer" }}
+              >
+                {entry.description ? (
+                  <img
+                    src={getWeatherIcon(entry.description)}
+                    alt={entry.description}
+                    className="weather-icon"
+                  />
+                ) : (
+                  <div className="weather-icon">❓</div>
+                )}
+                <div className="weather-info-summary">
+                  <div className="city-name">{formatCityName(entry.city)}</div>
+                  <div className="temp">
+                    {entry.temperature !== undefined
+                      ? `${entry.temperature}°C`
+                      : "N/A"}
+                  </div>
+                  <div className="description">
+                    {entry.description
+                      ? entry.description
+                          .split(" ")
+                          .map((word) => word[0].toUpperCase() + word.slice(1))
+                          .join(" ")
+                      : "No description"}
+                  </div>
                 </div>
               </div>
-            </div>
+            )
           ))
-        ))}
+        )}
       </div>
     </div>
   );
 };
 
-// Capitalizes each word in a city name string
 const formatCityName = (name) =>
   name
     ? name

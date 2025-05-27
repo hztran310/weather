@@ -1,12 +1,48 @@
-# React + Vite
+# 🌤️ WeatherVerse
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+**WeatherVerse** is a full-stack weather application that allows users to:
+- 🔍 Search for real-time weather by city
+- 📦 Store favorite cities
+- 📋 View stored cities with current weather updates
+- 🌙 Get personalized horoscope & mood insights based on birthday
+- 🧭 Navigate using a smart auto-hiding sidebar
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## ✨ Features
 
-## Expanding the ESLint configuration
+- 🔐 **JWT Auth**: Login and register securely
+- 🌍 **City Search**: Get live weather data via OpenWeather API
+- 💾 **Store Cities**: Save favorite locations
+- 🧠 **Horoscope & Zodiac**: Personalized based on user's birthday
+- 📊 **Data Visualization**: Compare temperature, wind, and rain
+- 🗺️ **Map Integration**: View city on map
+- 📚 **Auto-Hiding Sidebar**: Minimalist navigation drawer
 
-If you are developing a production application, we recommend using TypeScript and enable type-aware lint rules. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+---
+
+## 🛠️ Built With
+
+### Frontend
+- **React** (Vite)
+- **React Router DOM**
+- **React Icons**
+- **Leaflet.js** (for maps)
+- **tz-lookup** (for timezone handling)
+
+### Backend
+- **FastAPI**
+- **SQLAlchemy** (with PostgreSQL or SQLite)
+- **JWT Auth** (OAuth2 + Bearer Token)
+- **CORS** (enabled for frontend communication)
+
+---
+
+## 🚀 Setup Instructions
+
+### 🔧 Backend (FastAPI)
+
+1. **Clone the repo**:
+   ```bash
+   git clone https://github.com/yourusername/weatherverse.git
+   cd weatherverse/backend

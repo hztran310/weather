@@ -50,3 +50,8 @@ body {
   font-size: 0.85rem;
   color: #666;
 }
+
+.stored-weather h2 {
+  text-align: center;
+  width: 100%;
+}

@@ -10,6 +10,8 @@ import { getWeatherIcon } from "./iconMapper";
 import CompareWeather from './CompareWeather.jsx';
 import LuckyCard from "./MoodCard.jsx";
 import { useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
+
 
 
 delete L.Icon.Default.prototype._getIconUrl;
@@ -21,22 +23,25 @@ L.Icon.Default.mergeOptions({
 });
 
 
-
 const WeatherSearch = ({ token, onStoreSuccess, birthday }) => {
-    const [city, setCity] = useState("");
     const [weather, setWeather] = useState(null);
     const [error, setError] = useState(null);
     const [suggestions, setSuggestions] = useState([]);
     const [mapCenter, setMapCenter] = useState(null);
     const [zodiac, setZodiac] = useState(null);
     const [horoscope, setHoroscope] = useState(null);
-    const [input, setInput] = useState("");
+
 
     const mapRef = useRef(null);  // Initialize mapRef using useRef
 
-    const navigate = useNavigate();
-
     const API_KEY = "b02beb5f6754f998a9d86759f9d5c3cf";
+
+    const location = useLocation();
+    const params = new URLSearchParams(location.search);
+    const initialCity = params.get("city");
+
+    const [city, setCity] = useState(initialCity || "");
+    const [input, setInput] = useState("");
 
     const fetchSugesstion = async (query) => {
         if (!query) return setSuggestions([]);
@@ -60,7 +65,6 @@ const WeatherSearch = ({ token, onStoreSuccess, birthday }) => {
         setInput("");
     }
     
-
     const checkWeather = async () => {
         setError("");
         try {
@@ -138,6 +142,13 @@ const WeatherSearch = ({ token, onStoreSuccess, birthday }) => {
         };
         return date.toLocaleTimeString('en-US', options);
     };
+
+    useEffect(() => {
+        if (initialCity) {
+            checkWeather();
+        }
+    }, [initialCity]);
+
 
     // Initialize the map once the weather data is available
     useEffect(() => {
