@@ -326,26 +326,10 @@ const WeatherSearch = ({ token, onStoreSuccess, birthday }) => {
             )}
 
             {weather && (
-            <div className="weather-detail-container">
+            <div className="horoscope-card">
                 <LuckyCard birthday={birthday} zodiac={zodiac} horoscope={horoscope} />
             </div>
             )}
-
-            <button
-                onClick={() => navigate("/stored")}
-                style={{
-                    marginTop: '10px',
-                    width: '100%',
-                    padding: '10px',
-                    backgroundColor: '#2d6a4f',
-                    color: 'white',
-                    border: 'none',
-                    borderRadius: '20px',
-                    cursor: 'pointer'
-                }}
-            >
-                View Stored Data
-            </button>
 
         </div>
     );    

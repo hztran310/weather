@@ -4,6 +4,7 @@ import LoginForm from "./LoginForm";
 import Register from "./Register";
 import WeatherSearch from "./WeatherSearch";
 import StoredWeather from "./StoredWeather"; 
+import Sidebar from "./Sidebar";
 
 function App() {
     const [token, setToken] = useState("");
@@ -87,32 +88,36 @@ function App() {
 
     return (
         <Router>
-            <Routes>
-                <Route
-                    path="/"
-                    element={
-                        !token ? renderForm() : (
-                            <WeatherSearch
-                                token={token}
-                                birthday={birthday}
-                                zodiac={zodiac}
-                                horoscope={horoscope}
-                                onStoreSuccess={() => {}}
-                            />
-                        )
-                    }
-                />
-                <Route
-                    path="/stored"
-                    element={
-                        token ? (
-                            <StoredWeather token={token} />
-                        ) : (
-                            <Navigate to="/" />
-                        )
-                    }
-                />
-            </Routes>
+                {token && <Sidebar />}
+                    <div style={{ padding: "20px" }}>
+
+                    <Routes>
+                        <Route
+                            path="/"
+                            element={
+                                !token ? renderForm() : (
+                                    <WeatherSearch
+                                        token={token}
+                                        birthday={birthday}
+                                        zodiac={zodiac}
+                                        horoscope={horoscope}
+                                        onStoreSuccess={() => {}}
+                                    />
+                                )
+                            }
+                        />
+                        <Route
+                            path="/stored"
+                            element={
+                                token ? (
+                                    <StoredWeather token={token} />
+                                ) : (
+                                    <Navigate to="/" />
+                                )
+                            }
+                        />
+                    </Routes>
+                </div>
         </Router>
     );
 }
