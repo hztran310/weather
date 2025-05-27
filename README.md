@@ -2,44 +2,6 @@
 
 WeatherVerse is a full-stack weather forecasting app that allows users to search for live weather data, store their favorite cities, and receive personalized horoscope insights based on their zodiac sign.
 
-## 📂 Project Structure
-
-weatherverse/
-├── run.sh
-├── main.py
-├── auth.py
-├── database.py
-├── util.py
-├── model/
-│   ├── __init__.py
-│   ├── base.py
-│   ├── user.py
-│   └── weather.py
-├── weather-frontend/
-│   └── src/
-│       ├── api.js
-│       ├── App.css
-│       ├── App.jsx
-│       ├── CompareWeather.css
-│       ├── CompareWeather.jsx
-│       ├── iconMapper.js
-│       ├── index.css
-│       ├── LoginForm.jsx
-│       ├── main.jsx
-│       ├── MapWithPan.jsx
-│       ├── MoodCard.css
-│       ├── MoodCard.jsx
-│       ├── Register.jsx
-│       ├── Sidebar.css
-│       ├── Sidebar.jsx
-│       ├── StoredWeather.css
-│       ├── StoredWeather.jsx
-│       ├── WeatherChart.jsx
-│       ├── WeatherForm.jsx
-│       ├── WeatherList.jsx
-│       ├── WeatherSearch.css
-│       └── WeatherSearch.jsx
-
 
 ## ⚙️ Prerequisites
 
